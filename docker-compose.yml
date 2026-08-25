@@ -1,0 +1,51 @@
+services:
+  mysql:
+    image: mysql:8.0.41
+    container_name: deadline-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=pass
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "app", "-ppass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - deadline-network
+
+  sut:
+    image: openjdk:17-jdk-slim
+    container_name: deadline-sut
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
+      DB_USER: app
+      DB_PASS: pass
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app-deadline.jar:/app/app-deadline.jar
+    command: >
+      java -jar /app/app-deadline.jar
+      -P:jdbc.url=jdbc:mysql://mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
+      -P:jdbc.user=app
+      -P:jdbc.password=pass
+    restart: on-failure
+    networks:
+      - deadline-network
+
+volumes:
+  mysql-data:
+
+networks:
+  deadline-network:
+    driver: bridge
