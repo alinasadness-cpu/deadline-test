@@ -26,7 +26,15 @@ public class VerificationPage {
         verifyButton.click();
     }
 
+    public void verifyErrorNotification(String expectedText) {
+        errorNotification.shouldBe(visible).shouldHave(text(expectedText));
+    }
+
     public void verifyInvalidCodeNotification() {
-        errorNotification.shouldBe(visible).shouldHave(text("Неверный код"));
+        verifyErrorNotification("Неверный код");
+    }
+
+    public void waitForPageLoad() {
+        codeField.shouldBe(visible);
     }
 }

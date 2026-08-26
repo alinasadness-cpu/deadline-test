@@ -30,11 +30,15 @@ public class LoginPage {
         loginButton.click();
     }
 
+    public void verifyErrorNotification(String expectedText) {
+        errorNotification.shouldBe(visible).shouldHave(text(expectedText));
+    }
+
     public void verifyInvalidCredentialsNotification() {
-        errorNotification.shouldBe(visible).shouldHave(text("Неверный логин или пароль"));
+        verifyErrorNotification("Неверный логин или пароль");
     }
 
     public void verifyBlockedUserNotification() {
-        errorNotification.shouldBe(visible).shouldHave(text("Пользователь заблокирован"));
+        verifyErrorNotification("Пользователь заблокирован");
     }
 }

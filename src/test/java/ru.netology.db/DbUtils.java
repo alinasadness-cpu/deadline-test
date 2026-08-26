@@ -21,6 +21,7 @@ public class DbUtils {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
+
     @SneakyThrows
     public static String getUserIdByLogin(String login) {
         QueryRunner runner = new QueryRunner();
@@ -40,14 +41,6 @@ public class DbUtils {
         }
     }
 
-    @SneakyThrows
-    public static void insertAuthCode(String userId, String code) {
-        QueryRunner runner = new QueryRunner();
-        String sql = "INSERT INTO auth_codes (id, user_id, code) VALUES (UUID(), ?, ?)";
-        try (Connection conn = getConnection()) {
-            runner.update(conn, sql, userId, code);
-        }
-    }
 
     @SneakyThrows
     public static String getLatestAuthCodeForLogin(String login) {
@@ -56,9 +49,11 @@ public class DbUtils {
                 "JOIN users u ON u.id = ac.user_id " +
                 "WHERE u.login = ? ORDER BY ac.created DESC LIMIT 1";
         try (Connection conn = getConnection()) {
-            return runner.query(conn, sql, new BeanHandler<>(AuthCode.class), login).getCode();
+            AuthCode authCode = runner.query(conn, sql, new BeanHandler<>(AuthCode.class), login);
+            return authCode != null ? authCode.getCode() : null;
         }
     }
+
 
     @SneakyThrows
     public static void cleanDatabase() {
@@ -82,6 +77,7 @@ public class DbUtils {
             );
         }
     }
+
 
     @Data
     public static class User {

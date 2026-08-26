@@ -4,6 +4,7 @@ import com.codeborne.selenide.Configuration;
 import ru.netology.data.DataHelper;
 import ru.netology.db.DbUtils;
 import ru.netology.page.LoginPage;
+import ru.netology.page.VerificationPage;
 import org.junit.jupiter.api.*;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -26,23 +27,24 @@ public class LoginTest {
     }
 
     @Test
-    @Order(1)
-    @DisplayName("Успешный вход с валидными данными и кодом из БД")
-    void shouldLoginSuccessfully() {
+    @DisplayName("Успешный вход с кодом из БД (основной сценарий)")
+    void shouldLoginSuccessfullyWithCodeFromDatabase() {
         var authInfo = DataHelper.getValidUser();
-        String userId = DbUtils.getUserIdByLogin(authInfo.getLogin());
-        String verificationCode = DataHelper.generateValidVerificationCode();
-        DbUtils.insertAuthCode(userId, verificationCode);
 
         var loginPage = open("/", LoginPage.class);
         var verificationPage = loginPage.login(authInfo);
-        var dashboardPage = verificationPage.verify(verificationCode);
+
+        verificationPage.waitForPageLoad();
+
+        String actualCode = DbUtils.getLatestAuthCodeForLogin(authInfo.getLogin());
+        assertThat(actualCode).isNotNull().isNotEmpty();
+
+        var dashboardPage = verificationPage.verify(actualCode);
 
         dashboardPage.verifyDashboardVisible();
     }
 
     @Test
-    @Order(2)
     @DisplayName("Неверный пароль - показывается ошибка")
     void shouldShowErrorWithInvalidPassword() {
         var loginPage = open("/", LoginPage.class);
@@ -51,23 +53,19 @@ public class LoginTest {
     }
 
     @Test
-    @Order(3)
     @DisplayName("Неверный код подтверждения - показывается ошибка")
     void shouldShowErrorWithInvalidVerificationCode() {
         var authInfo = DataHelper.getValidUser();
-        String userId = DbUtils.getUserIdByLogin(authInfo.getLogin());
-        String correctCode = DataHelper.generateValidVerificationCode();
-        DbUtils.insertAuthCode(userId, correctCode);
 
         var loginPage = open("/", LoginPage.class);
         var verificationPage = loginPage.login(authInfo);
-        verificationPage.verifyWithInvalidCode(DataHelper.getInvalidVerificationCode());
+        verificationPage.waitForPageLoad();
 
+        verificationPage.verifyWithInvalidCode(DataHelper.getInvalidVerificationCode());
         verificationPage.verifyInvalidCodeNotification();
     }
 
     @Test
-    @Order(4)
     @DisplayName("Блокировка пользователя после 3 неудачных попыток")
     void shouldBlockUserAfterThreeFailedAttempts() {
         var authInfo = DataHelper.getValidUser();
@@ -87,21 +85,12 @@ public class LoginTest {
     }
 
     @Test
-    @Order(5)
-    @DisplayName("Получение кода из БД для входа")
-    void shouldGetVerificationCodeFromDatabaseForLogin() {
-        var authInfo = DataHelper.getValidUser();
-        String userId = DbUtils.getUserIdByLogin(authInfo.getLogin());
-        String expectedCode = DataHelper.generateValidVerificationCode();
-        DbUtils.insertAuthCode(userId, expectedCode);
-
-        String codeFromDb = DbUtils.getLatestAuthCodeForLogin(authInfo.getLogin());
-        assertThat(codeFromDb).isEqualTo(expectedCode);
+    @DisplayName("Блокированный пользователь не может войти")
+    void shouldNotAllowBlockedUserToLogin() {
+        var authInfo = DataHelper.getBlockedUser();
 
         var loginPage = open("/", LoginPage.class);
-        var verificationPage = loginPage.login(authInfo);
-        var dashboardPage = verificationPage.verify(codeFromDb);
-
-        dashboardPage.verifyDashboardVisible();
+        loginPage.loginWithInvalidData(authInfo);
+        loginPage.verifyBlockedUserNotification();
     }
 }
