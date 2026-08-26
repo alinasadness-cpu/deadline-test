@@ -21,13 +21,13 @@ public class DbUtils {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-
     @SneakyThrows
     public static String getUserIdByLogin(String login) {
         QueryRunner runner = new QueryRunner();
         String sql = "SELECT id FROM users WHERE login = ?";
         try (Connection conn = getConnection()) {
-            return runner.query(conn, sql, new BeanHandler<>(User.class), login).getId();
+            User user = runner.query(conn, sql, new BeanHandler<>(User.class), login);
+            return user != null ? user.getId() : null;
         }
     }
 
@@ -41,7 +41,6 @@ public class DbUtils {
         }
     }
 
-
     @SneakyThrows
     public static String getLatestAuthCodeForLogin(String login) {
         QueryRunner runner = new QueryRunner();
@@ -54,17 +53,16 @@ public class DbUtils {
         }
     }
 
-
     @SneakyThrows
     public static void cleanDatabase() {
         QueryRunner runner = new QueryRunner();
         try (Connection conn = getConnection()) {
-            runner.update(conn, "SET FOREIGN_KEY_CHECKS = 0");
+
             runner.update(conn, "DELETE FROM card_transactions");
             runner.update(conn, "DELETE FROM auth_codes");
             runner.update(conn, "DELETE FROM cards");
             runner.update(conn, "DELETE FROM users");
-            runner.update(conn, "SET FOREIGN_KEY_CHECKS = 1");
+
 
             runner.update(conn,
                     "INSERT INTO users (id, login, password, status) VALUES " +
@@ -77,7 +75,6 @@ public class DbUtils {
             );
         }
     }
-
 
     @Data
     public static class User {

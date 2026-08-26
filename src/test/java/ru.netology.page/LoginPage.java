@@ -17,17 +17,20 @@ public class LoginPage {
         loginField.shouldBe(visible);
     }
 
-    public VerificationPage login(DataHelper.AuthInfo authInfo) {
+
+    private void fillLoginForm(DataHelper.AuthInfo authInfo) {
         loginField.setValue(authInfo.getLogin());
         passwordField.setValue(authInfo.getPassword());
         loginButton.click();
+    }
+
+    public VerificationPage login(DataHelper.AuthInfo authInfo) {
+        fillLoginForm(authInfo);
         return new VerificationPage();
     }
 
     public void loginWithInvalidData(DataHelper.AuthInfo authInfo) {
-        loginField.setValue(authInfo.getLogin());
-        passwordField.setValue(authInfo.getPassword());
-        loginButton.click();
+        fillLoginForm(authInfo);
     }
 
     public void verifyErrorNotification(String expectedText) {

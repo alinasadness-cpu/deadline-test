@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:8.0.41
+    image: mysql:8.0.31
     container_name: deadline-mysql
     ports:
       - "3306:3306"
@@ -15,31 +15,9 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "app", "-ppass"]
       interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - deadline-network
-
-  sut:
-    image: openjdk:17-jdk-slim
-    container_name: deadline-sut
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      DB_URL: jdbc:mysql://mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
-      DB_USER: app
-      DB_PASS: pass
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./app-deadline.jar:/app/app-deadline.jar
-    command: >
-      java -jar /app/app-deadline.jar
-      -P:jdbc.url=jdbc:mysql://mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
-      -P:jdbc.user=app
-      -P:jdbc.password=pass
-    restart: on-failure
+      timeout: 10s
+      retries: 10
+      start_period: 30s
     networks:
       - deadline-network
 
