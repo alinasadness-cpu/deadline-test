@@ -6,7 +6,6 @@ services:
       - "3306:3306"
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-      - mysql-data:/var/lib/mysql
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=app
@@ -18,12 +17,3 @@ services:
       timeout: 10s
       retries: 10
       start_period: 30s
-    networks:
-      - deadline-network
-
-volumes:
-  mysql-data:
-
-networks:
-  deadline-network:
-    driver: bridge
