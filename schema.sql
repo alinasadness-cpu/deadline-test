@@ -36,11 +36,3 @@ CREATE TABLE card_transactions
     amount_in_kopecks INT         NOT NULL,
     created           TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO users (id, login, password, status) VALUES
-                                                    ('550e8400-e29b-41d4-a716-446655440000', 'vasya',
-                                                     '$2a$10$7XK9YzT4Pq8WlM3nR5sV7uQxYzAbCdEfGhIjKlMnOpQrStUvWxYz', 'active'),
-                                                    ('550e8400-e29b-41d4-a716-446655440001', 'petya',
-                                                     '$2a$10$7XK9YzT4Pq8WlM3nR5sV7uQxYzAbCdEfGhIjKlMnOpQrStUvWxYz', 'active'),
-                                                    ('550e8400-e29b-41d4-a716-446655440002', 'masha',
-                                                     '$2a$10$7XK9YzT4Pq8WlM3nR5sV7uQxYzAbCdEfGhIjKlMnOpQrStUvWxYz', 'active');
