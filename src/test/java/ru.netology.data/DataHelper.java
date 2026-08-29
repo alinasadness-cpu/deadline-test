@@ -6,13 +6,12 @@ import java.util.UUID;
 
 public class DataHelper {
 
-
     public static AuthInfo getValidUser() {
-        return new AuthInfo("vasya", "password");
+        return new AuthInfo("vasya", "qwerty123");
     }
 
     public static AuthInfo getSecondValidUser() {
-        return new AuthInfo("petya", "password");
+        return new AuthInfo("petya", "qwerty123");
     }
 
     public static AuthInfo getValidLoginInvalidPassword() {
@@ -20,9 +19,8 @@ public class DataHelper {
     }
 
     public static AuthInfo getBlockedUser() {
-        return new AuthInfo("masha", "password");
+        return new AuthInfo("masha", "qwerty123");
     }
-
 
     public static String generateValidVerificationCode() {
         return UUID.randomUUID().toString().substring(0, 6).toUpperCase();
@@ -32,7 +30,6 @@ public class DataHelper {
         return "000000";
     }
 
-
     @Data
     @AllArgsConstructor
     public static class AuthInfo {
@@ -40,3 +37,4 @@ public class DataHelper {
         private String password;
     }
 }
+

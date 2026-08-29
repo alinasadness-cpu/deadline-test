@@ -57,22 +57,11 @@ public class DbUtils {
     public static void cleanDatabase() {
         QueryRunner runner = new QueryRunner();
         try (Connection conn = getConnection()) {
-
             runner.update(conn, "DELETE FROM card_transactions");
             runner.update(conn, "DELETE FROM auth_codes");
             runner.update(conn, "DELETE FROM cards");
             runner.update(conn, "DELETE FROM users");
 
-
-            runner.update(conn,
-                    "INSERT INTO users (id, login, password, status) VALUES " +
-                            "('550e8400-e29b-41d4-a716-446655440000', 'vasya', " +
-                            "'$2a$10$7XK9YzT4Pq8WlM3nR5sV7uQxYzAbCdEfGhIjKlMnOpQrStUvWxYz', 'active')," +
-                            "('550e8400-e29b-41d4-a716-446655440001', 'petya', " +
-                            "'$2a$10$7XK9YzT4Pq8WlM3nR5sV7uQxYzAbCdEfGhIjKlMnOpQrStUvWxYz', 'active')," +
-                            "('550e8400-e29b-41d4-a716-446655440002', 'masha', " +
-                            "'$2a$10$7XK9YzT4Pq8WlM3nR5sV7uQxYzAbCdEfGhIjKlMnOpQrStUvWxYz', 'active')"
-            );
         }
     }
 

@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginTest {
 
-    @BeforeEach
-    void cleanUp() {
+    @AfterAll
+    static void cleanUp() {
         DbUtils.cleanDatabase();
     }
 
@@ -21,7 +21,7 @@ public class LoginTest {
     void shouldLoginSuccessfullyWithCodeFromDatabase() {
         var authInfo = DataHelper.getValidUser();
 
-        var loginPage = open("http://localhost:8080", LoginPage.class);
+        var loginPage = open("http://localhost:9999", LoginPage.class);
         var verificationPage = loginPage.login(authInfo);
         verificationPage.waitForPageLoad();
 
@@ -35,7 +35,7 @@ public class LoginTest {
     @Test
     @DisplayName("Неверный пароль")
     void shouldShowErrorWithInvalidPassword() {
-        var loginPage = open("http://localhost:8080", LoginPage.class);
+        var loginPage = open("http://localhost:9999", LoginPage.class);
         loginPage.loginWithInvalidData(DataHelper.getValidLoginInvalidPassword());
         loginPage.verifyInvalidCredentialsNotification();
     }
@@ -45,7 +45,7 @@ public class LoginTest {
     void shouldShowErrorWithInvalidVerificationCode() {
         var authInfo = DataHelper.getValidUser();
 
-        var loginPage = open("http://localhost:8080", LoginPage.class);
+        var loginPage = open("http://localhost:9999", LoginPage.class);
         var verificationPage = loginPage.login(authInfo);
         verificationPage.waitForPageLoad();
 
@@ -58,12 +58,12 @@ public class LoginTest {
     void shouldBlockUserAfterThreeFailedAttempts() {
         var authInfo = DataHelper.getValidUser();
 
-        var loginPage = open("http://localhost:8080", LoginPage.class);
+        var loginPage = open("http://localhost:9999", LoginPage.class);
 
         for (int i = 0; i < 3; i++) {
             loginPage.loginWithInvalidData(DataHelper.getValidLoginInvalidPassword());
             loginPage.verifyInvalidCredentialsNotification();
-            loginPage = open("http://localhost:8080", LoginPage.class);
+            loginPage = open("http://localhost:9999", LoginPage.class);
         }
 
         loginPage.loginWithInvalidData(authInfo);
@@ -77,8 +77,9 @@ public class LoginTest {
     void shouldNotAllowBlockedUserToLogin() {
         var authInfo = DataHelper.getBlockedUser();
 
-        var loginPage = open("http://localhost:8080", LoginPage.class);
+        var loginPage = open("http://localhost:9999", LoginPage.class);
         loginPage.loginWithInvalidData(authInfo);
         loginPage.verifyBlockedUserNotification();
     }
 }
+
