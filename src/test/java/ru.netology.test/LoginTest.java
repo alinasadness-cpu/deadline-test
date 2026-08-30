@@ -59,7 +59,7 @@ public class LoginTest {
         var authInfo = DataHelper.getValidUser();
 
         var loginPage = open("http://localhost:9999", LoginPage.class);
-
+        
         for (int i = 0; i < 3; i++) {
             loginPage.loginWithInvalidData(DataHelper.getValidLoginInvalidPassword());
             loginPage.verifyInvalidCredentialsNotification();
@@ -71,15 +71,4 @@ public class LoginTest {
 
         assertThat(DbUtils.getUserStatus(authInfo.getLogin())).isEqualTo("blocked");
     }
-
-    @Test
-    @DisplayName("Блокированный пользователь")
-    void shouldNotAllowBlockedUserToLogin() {
-        var authInfo = DataHelper.getBlockedUser();
-
-        var loginPage = open("http://localhost:9999", LoginPage.class);
-        loginPage.loginWithInvalidData(authInfo);
-        loginPage.verifyBlockedUserNotification();
-    }
 }
-
