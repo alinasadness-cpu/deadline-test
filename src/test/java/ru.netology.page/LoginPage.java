@@ -17,7 +17,6 @@ public class LoginPage {
         loginField.shouldBe(visible);
     }
 
-
     private void fillLoginForm(DataHelper.AuthInfo authInfo) {
         loginField.setValue(authInfo.getLogin());
         passwordField.setValue(authInfo.getPassword());
@@ -38,7 +37,7 @@ public class LoginPage {
     }
 
     public void verifyInvalidCredentialsNotification() {
-        verifyErrorNotification("Неверный логин или пароль");
+        verifyErrorNotification("Ошибка! Неверный логин или пароль");
     }
 
     public void verifyBlockedUserNotification() {
