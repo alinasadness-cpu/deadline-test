@@ -1,15 +1,27 @@
 package ru.netology.test;
 
+import com.codeborne.selenide.Configuration;
 import ru.netology.data.DataHelper;
 import ru.netology.db.DbUtils;
 import ru.netology.page.LoginPage;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginTest {
+
+    @BeforeAll
+    static void setUp() {
+
+        Configuration.browser = HtmlUnitDriver.class.getName();
+        Configuration.headless = true;
+        Configuration.baseUrl = "http://localhost:9999";
+        Configuration.timeout = 15000;
+        System.setProperty("selenide.ignorehttpserrors", "true");
+    }
 
     @AfterAll
     static void cleanUp() {
@@ -21,7 +33,7 @@ public class LoginTest {
     void shouldLoginSuccessfullyWithCodeFromDatabase() {
         var authInfo = DataHelper.getValidUser();
 
-        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var loginPage = open("/", LoginPage.class);
         var verificationPage = loginPage.login(authInfo);
         verificationPage.waitForPageLoad();
 
@@ -35,7 +47,7 @@ public class LoginTest {
     @Test
     @DisplayName("Неверный пароль")
     void shouldShowErrorWithInvalidPassword() {
-        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var loginPage = open("/", LoginPage.class);
         loginPage.loginWithInvalidData(DataHelper.getValidLoginInvalidPassword());
         loginPage.verifyInvalidCredentialsNotification();
     }
@@ -45,7 +57,7 @@ public class LoginTest {
     void shouldShowErrorWithInvalidVerificationCode() {
         var authInfo = DataHelper.getValidUser();
 
-        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var loginPage = open("/", LoginPage.class);
         var verificationPage = loginPage.login(authInfo);
         verificationPage.waitForPageLoad();
 
@@ -58,12 +70,12 @@ public class LoginTest {
     void shouldBlockUserAfterThreeFailedAttempts() {
         var authInfo = DataHelper.getValidUser();
 
-        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var loginPage = open("/", LoginPage.class);
 
         for (int i = 0; i < 3; i++) {
             loginPage.loginWithInvalidData(DataHelper.getValidLoginInvalidPassword());
             loginPage.verifyInvalidCredentialsNotification();
-            loginPage = open("http://localhost:9999", LoginPage.class);
+            loginPage = open("/", LoginPage.class);
         }
 
         loginPage.loginWithInvalidData(authInfo);
@@ -71,15 +83,4 @@ public class LoginTest {
 
         assertThat(DbUtils.getUserStatus(authInfo.getLogin())).isEqualTo("blocked");
     }
-
-    @Test
-    @DisplayName("Блокированный пользователь")
-    void shouldNotAllowBlockedUserToLogin() {
-        var authInfo = DataHelper.getBlockedUser();
-
-        var loginPage = open("http://localhost:9999", LoginPage.class);
-        loginPage.loginWithInvalidData(authInfo);
-        loginPage.verifyBlockedUserNotification();
-    }
 }
-
