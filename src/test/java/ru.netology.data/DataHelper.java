@@ -18,10 +18,6 @@ public class DataHelper {
         return new AuthInfo("vasya", "wrong_password");
     }
 
-    public static AuthInfo getBlockedUser() {
-        return new AuthInfo("masha", "qwerty123");
-    }
-
     public static String generateValidVerificationCode() {
         return UUID.randomUUID().toString().substring(0, 6).toUpperCase();
     }
@@ -37,4 +33,3 @@ public class DataHelper {
         private String password;
     }
 }
-
