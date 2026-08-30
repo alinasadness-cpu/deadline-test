@@ -26,15 +26,15 @@ public class VerificationPage {
         verifyButton.click();
     }
 
+    public void waitForPageLoad() {
+        codeField.shouldBe(visible);
+    }
+
     public void verifyErrorNotification(String expectedText) {
         errorNotification.shouldBe(visible).shouldHave(text(expectedText));
     }
 
     public void verifyInvalidCodeNotification() {
-        verifyErrorNotification("Неверный код");
-    }
-
-    public void waitForPageLoad() {
-        codeField.shouldBe(visible);
+        verifyErrorNotification("Ошибка! Неверный код");
     }
 }
