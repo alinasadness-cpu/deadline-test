@@ -1,11 +1,11 @@
 package ru.netology.test;
 
 import com.codeborne.selenide.Configuration;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import ru.netology.data.DataHelper;
 import ru.netology.db.DbUtils;
 import ru.netology.page.LoginPage;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,12 +15,11 @@ public class LoginTest {
 
     @BeforeAll
     static void setUp() {
-
-        Configuration.browser = HtmlUnitDriver.class.getName();
-        Configuration.headless = true;
-        Configuration.baseUrl = "http://localhost:9999";
-        Configuration.timeout = 15000;
-        System.setProperty("selenide.ignorehttpserrors", "true");
+        WebDriverManager.firefoxdriver().setup();
+        Configuration.browser = "firefox";
+        Configuration.headless = false;
+        Configuration.baseUrl = "http://185.119.56.254:9999";
+        Configuration.timeout = 30000;
     }
 
     @AfterAll

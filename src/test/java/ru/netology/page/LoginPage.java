@@ -3,8 +3,10 @@ package ru.netology.page;
 import com.codeborne.selenide.SelenideElement;
 import ru.netology.data.DataHelper;
 
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
+import java.time.Duration;
+
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
 
@@ -14,7 +16,7 @@ public class LoginPage {
     private final SelenideElement errorNotification = $("[data-test-id='error-notification']");
 
     public LoginPage() {
-        loginField.shouldBe(visible);
+        loginField.shouldBe(visible, Duration.ofSeconds(20));
     }
 
     private void fillLoginForm(DataHelper.AuthInfo authInfo) {
@@ -33,7 +35,7 @@ public class LoginPage {
     }
 
     public void verifyErrorNotification(String expectedText) {
-        errorNotification.shouldBe(visible).shouldHave(text(expectedText));
+        errorNotification.shouldBe(visible, Duration.ofSeconds(10)).shouldHave(com.codeborne.selenide.Condition.text(expectedText));
     }
 
     public void verifyInvalidCredentialsNotification() {
@@ -42,5 +44,9 @@ public class LoginPage {
 
     public void verifyBlockedUserNotification() {
         verifyErrorNotification("Пользователь заблокирован");
+    }
+
+    public void waitForPageLoad() {
+        loginField.shouldBe(visible, Duration.ofSeconds(20));
     }
 }
