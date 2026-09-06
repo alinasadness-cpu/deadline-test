@@ -36,6 +36,7 @@ public class LoginTest {
         var verificationPage = loginPage.login(authInfo);
         verificationPage.waitForPageLoad();
 
+        // Получаем код из БД ПОСЛЕ логина
         String actualCode = DbUtils.getLatestAuthCodeForLogin(authInfo.getLogin());
         assertThat(actualCode).isNotNull().isNotEmpty();
 

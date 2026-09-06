@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.time.LocalDateTime;
 
 public class DbUtils {
+
     private static final String DB_URL =
             "jdbc:mysql://185.119.56.254:3306/app?useSSL=false&allowPublicKeyRetrieval=true";
     private static final String DB_USER = "app";
@@ -56,8 +57,8 @@ public class DbUtils {
     public static void cleanDatabase() {
         QueryRunner runner = new QueryRunner();
         try (Connection conn = getConnection()) {
-            runner.update(conn, "DELETE FROM card_transactions");
             runner.update(conn, "DELETE FROM auth_codes");
+            runner.update(conn, "DELETE FROM card_transactions");
             runner.update(conn, "DELETE FROM cards");
             runner.update(conn, "DELETE FROM users");
         }

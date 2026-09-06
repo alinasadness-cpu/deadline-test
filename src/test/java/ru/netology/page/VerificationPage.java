@@ -33,7 +33,8 @@ public class VerificationPage {
     }
 
     public void verifyErrorNotification(String expectedText) {
-        errorNotification.shouldBe(visible, Duration.ofSeconds(10)).shouldHave(com.codeborne.selenide.Condition.text(expectedText));
+        errorNotification.shouldBe(visible, Duration.ofSeconds(10))
+                .shouldHave(com.codeborne.selenide.Condition.text(expectedText));
     }
 
     public void verifyInvalidCodeNotification() {
