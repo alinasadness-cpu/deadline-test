@@ -35,11 +35,12 @@ public class LoginPage {
     }
 
     public void verifyErrorNotification(String expectedText) {
-        errorNotification.shouldBe(visible, Duration.ofSeconds(10)).shouldHave(com.codeborne.selenide.Condition.text(expectedText));
+        errorNotification.shouldBe(visible, Duration.ofSeconds(10))
+                .shouldHave(com.codeborne.selenide.Condition.text(expectedText));
     }
 
     public void verifyInvalidCredentialsNotification() {
-        verifyErrorNotification("Ошибка! Неверный логин или пароль");
+        verifyErrorNotification("Ошибка! Неверно указан логин или пароль");
     }
 
     public void verifyBlockedUserNotification() {

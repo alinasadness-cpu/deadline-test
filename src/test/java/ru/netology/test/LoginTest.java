@@ -1,7 +1,6 @@
 package ru.netology.test;
 
 import com.codeborne.selenide.Configuration;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import ru.netology.data.DataHelper;
 import ru.netology.db.DbUtils;
 import ru.netology.page.LoginPage;
@@ -15,11 +14,8 @@ public class LoginTest {
 
     @BeforeAll
     static void setUp() {
-        WebDriverManager.firefoxdriver().setup();
         Configuration.browser = "firefox";
-        Configuration.headless = false;
-        Configuration.baseUrl = "http://185.119.56.254:9999";
-        Configuration.timeout = 30000;
+        Configuration.baseUrl = "http://localhost:9999";
     }
 
     @AfterAll
@@ -36,7 +32,6 @@ public class LoginTest {
         var verificationPage = loginPage.login(authInfo);
         verificationPage.waitForPageLoad();
 
-        // Получаем код из БД ПОСЛЕ логина
         String actualCode = DbUtils.getLatestAuthCodeForLogin(authInfo.getLogin());
         assertThat(actualCode).isNotNull().isNotEmpty();
 
