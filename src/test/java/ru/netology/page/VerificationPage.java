@@ -38,6 +38,6 @@ public class VerificationPage {
     }
 
     public void verifyInvalidCodeNotification() {
-        verifyErrorNotification("Ошибка! Неверный код");
+        verifyErrorNotification("Ошибка! Неверно указан код! Попробуйте ещё раз.");
     }
 }
